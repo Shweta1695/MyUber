@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        public static final String CLIENT_ID = "bLwET2iqo-_e3StBnBA18ipEPx1kVH5P";
-        public static final String REDIRECT_URI = "com.example.shwetatripathi.myuber.uberauth://redirect";
+        public static final String CLIENT_ID = BuildConfig.CLIENT_ID;
+        public static final String REDIRECT_URI = BuildConfig.REDIRECT_URI;
         public static final String SERVER_TOKEN="LWDgVstT_fcFvy0qD8b9QuaMHfUrxQPfsc4fCjvV";
 
         private static final String LOG_TAG = "MainActivity";

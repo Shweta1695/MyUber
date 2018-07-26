@@ -10,8 +10,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        buildConfigField "String", "CLIENT_ID", "\"${loadSecret("bLwET2iqo-_e3StBnBA18ipEPx1kVH5P")}\"" //Add your client id to gradle.properties
-   //     buildConfigField "String", "REDIRECT_URI", "\"${loadSecret("com.example.shwetatripathi.myuber.uberauth://redirect")}\""
+        buildConfigField "String", "CLIENT_ID", "\"bLwET2iqo-_e3StBnBA18ipEPx1kVH5P\"" //Add your client id to gradle.properties
+        buildConfigField "String", "REDIRECT_URI", "\"https://riders.uber.com\""
     }
     buildTypes {
         release {
