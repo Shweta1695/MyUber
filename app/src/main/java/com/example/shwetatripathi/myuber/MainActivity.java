@@ -2,6 +2,7 @@ package com.example.shwetatripathi.myuber;
 
 import android.content.Intent;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,9 +39,6 @@ import static com.uber.sdk.android.core.utils.Preconditions.checkState;
 public class MainActivity extends AppCompatActivity {
     Button button1;
 
-
-
-
         public static final String CLIENT_ID = BuildConfig.CLIENT_ID;
         public static final String REDIRECT_URI = BuildConfig.REDIRECT_URI;
         public static final String SERVER_TOKEN="LWDgVstT_fcFvy0qD8b9QuaMHfUrxQPfsc4fCjvV";
@@ -49,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         private static final int LOGIN_BUTTON_CUSTOM_REQUEST_CODE = 1112;
         private static final int CUSTOM_BUTTON_REQUEST_CODE = 1113;
-
 
         private LoginButton blackButton;
 
@@ -62,16 +59,20 @@ public class MainActivity extends AppCompatActivity {
         protected void onCreate (Bundle savedInstanceState){
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+            button1=  findViewById(R.id.custom_uber_button);
+            button1.setVisibility(View.GONE);
 
             configuration = new SessionConfiguration.Builder()
                     .setClientId(CLIENT_ID)
                     .setRedirectUri(REDIRECT_URI)
+//                    .setServerToken(SERVER_TOKEN)
                     .setScopes(Arrays.asList(Scope.RIDE_WIDGETS,Scope.PROFILE))
                     .build();
 
             validateConfiguration(configuration);
 
             accessTokenStorage = new AccessTokenManager(this);
+
 
              //Create a button using a custom AccessTokenStorage
             //Custom Scopes are set using XML for this button as well in R.layout.activity_sample
@@ -116,10 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
             blackButton.onActivityResult(requestCode, resultCode, data);
 
-            loginManager.onActivityResult(this, requestCode, resultCode, data);
-        }
 
-        private class SampleLoginCallback implements LoginCallback {
+
+
+            loginManager.onActivityResult(this, requestCode, resultCode, data);
+}
+
+private class SampleLoginCallback implements LoginCallback {
 
             @Override
             public void onLoginCancel() {
@@ -136,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLoginSuccess(@NonNull AccessToken accessToken) {
                 Toast.makeText(MainActivity.this,"SUCCESS LOGIN", Toast.LENGTH_LONG).show();
+                button1.setVisibility(View.VISIBLE);
+                blackButton.setVisibility(View.GONE);
                 loadProfileInfo();
             }
 
@@ -156,7 +162,21 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Greetings hello", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, "Greetings hello "+response.body().getFirstName(), Toast.LENGTH_LONG).show();
+                                button1.setVisibility(View.VISIBLE);
+                                blackButton.setVisibility(View.GONE);
+
+                                button1.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View arg0) {
+                                        Intent viewIntent =
+                                                new Intent("android.intent.action.VIEW",
+                                                        Uri.parse("https://m.uber.com/?client_id="+CLIENT_ID));
+                                        startActivity(viewIntent);
+                                    }
+                                });
+
+
+                                //   fetchBasicProfileData();
                             } else {
                                 ApiError error = ErrorParser.parseError(response);
                                 Toast.makeText(MainActivity.this, error.getClientErrors().get(0).getTitle(), Toast.LENGTH_LONG).show();
@@ -170,7 +190,11 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
 
+private void fetchBasicProfileData()
+{
+    loginManager.loginForImplicitGrant(MainActivity.this);
 
+}
 
         /**
          * Validates the local variables needed by the Uber SDK used in the sample project
